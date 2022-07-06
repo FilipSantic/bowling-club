@@ -1,2 +1,2 @@
 # bowling-club
-Node.js 
+Node.js, MySQL backend project
