@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
+const { createGame, getGames } = require("../controllers/gameController");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
@@ -26,10 +27,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (user) {
     res.status(201).json({
-      _id: user,
+      _id: user.id,
       username: username,
       password: hashedPassword,
-      token: generateToken(user),
+      token: generateToken(user.id),
     });
   } else {
     res.status(400);
@@ -38,9 +39,26 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
+  const { username, password } = req.body;
+  const userModel = new User;
+
+  const user = await userModel.findOne(username);
+
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.status(201).json({
+      _id: user.id,
+      username: user.username,
+      password: user.password,
+      token: generateToken(user.id),
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
 });
 
 const getUserData = asyncHandler(async (req, res) => {
+  await createGame(req, res);
 });
 
 const generateToken = (id) => {

@@ -11,8 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use("/api/users", require("./routes/usersRoutes"));
-app.use("/api/games", require("./routes/gamesRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/games", require("./routes/gameRoutes"));
 
 // JSON error handler
 app.use(errorHandler);

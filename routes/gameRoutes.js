@@ -4,7 +4,7 @@ const { protect } = require("../middleware/authMiddleware");
 const {
   getGames,
   createGame,
-} = require("../controllers/gamesController");
+} = require("../controllers/gameController");
 
 router
   .route("/")
