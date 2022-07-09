@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
-const { createGame, getGames } = require("../controllers/gameController");
+const { createGame, getPreviousGames } = require("../controllers/gameController");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
@@ -58,7 +58,32 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const getUserData = asyncHandler(async (req, res) => {
-  await createGame(req, res);
+  let currentGame = await createGame(req, res);
+  let previousGames = await getPreviousGames(req, res);
+
+  if (currentGame) {
+    res.status(201).json({
+      game_id: currentGame.id,
+      user_id: currentGame.user_id,
+      frame_1: currentGame.frame_1,
+      frame_2: currentGame.frame_2,
+      frame_3: currentGame.frame_3,
+      frame_4: currentGame.frame_4,
+      frame_5: currentGame.frame_5,
+      frame_6: currentGame.frame_6,
+      frame_7: currentGame.frame_7,
+      frame_8: currentGame.frame_8,
+      frame_9: currentGame.frame_9,
+      frame_10: currentGame.frame_10,
+      current_frame: currentGame.current_frame,
+      score: currentGame.score,
+      ongoing: currentGame.ongoing,
+      previous_games: previousGames
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error loading game");
+  }
 });
 
 const generateToken = (id) => {

@@ -3,39 +3,57 @@ const Game = require("../models/gameModel");
 
 const createGame = asyncHandler(async (req, res) => {
   const gameModel = new Game;
-  let game = await gameModel.load(req.user.id);
+  let currentGame = await gameModel.load(req.user.id);
 
-  if(!game) {
-    game = await gameModel.create(req.user.id);
+  if(!currentGame) {
+    currentGame = await gameModel.create(req.user.id);
   }
 
-  if (game) {
+  return currentGame;
+});
+
+const updateGame = asyncHandler(async (req, res) => {
+  const { bowl_score, frame_score } = req.body;
+  const gameModel = new Game;
+  let throwScenario = "NORMAL";
+
+  if (bowl_score < 0 || bowl_score > 10 || frame_score > 10) {
+    res.status(400);
+    throw new Error("Bowl score must be in range of 0 to 10 knocked pins in whole frame");
+  }
+
+  if(req.params.try == 1 && bowl_score === 10) {
+    throwScenario = "STRIKE";
+  }
+  if(req.params.try == 2 && (frame_score + bowl_score === 10)) {
+    throwScenario = "SPARE";
+  }
+
+  await gameModel.update(req.params.id, req.params.frame, req.params.try, bowl_score, frame_score, throwScenario);
+
+  if (bowl_score) {
     res.status(201).json({
-      _id: game.id,
-      user_id: game.user_id,
-      frame_1: game.frame_1,
-      frame_2: game.frame_2,
-      frame_3: game.frame_3,
-      frame_4: game.frame_4,
-      frame_5: game.frame_5,
-      frame_6: game.frame_6,
-      frame_7: game.frame_7,
-      frame_8: game.frame_8,
-      frame_9: game.frame_9,
-      frame_10: game.frame_10,
-      score: game.score,
-      ongoing: game.ongoing,
+      _id: req.params.id,
+      frame: req.params.frame,
+      try: req.params.try,
+      bowl_score: bowl_score,
+      thow_scenario: throwScenario
     });
   } else {
     res.status(400);
-    throw new Error("Game was not started");
+    throw new Error("Invalid data");
   }
 });
 
-const getGames = asyncHandler(async (req, res) => {
+const getPreviousGames = asyncHandler(async (req, res) => {
+  const gameModel = new Game;
+  let previousGames = await gameModel.loadAll(req.user.id);
+
+  return previousGames;
 });
 
 module.exports = {
   createGame,
-  getGames,
+  updateGame,
+  getPreviousGames,
 };
