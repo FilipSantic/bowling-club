@@ -11,15 +11,13 @@ Node.js and MySQL bowling scoring system
 
 ## How to run
 
-These files were included in repo
+These files were included in repo for easier fetching and testing:
 
 ```
 package.json
 package-lock.json
 .env
 ```
-
-for easier fetching and testing.
 
 Only node_modules are missing in both server and client.
 
