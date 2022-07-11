@@ -11,6 +11,6 @@ router
   .route("/")
   .get(protect, getPreviousGames)
   .post(protect, createGame);
-router.patch("/:id/:frame/:try", protect, updateGame);
+router.patch("/:id/:current_frame/:bowl_try/:frame_score/:strike_count/:last_frame_scenario", protect, updateGame);
 
 module.exports = router;

@@ -9,35 +9,75 @@ const createGame = asyncHandler(async (req, res) => {
     currentGame = await gameModel.create(req.user.id);
   }
 
-  return currentGame;
+  if (currentGame) {
+    res.status(201).json({
+      game_id: currentGame.id,
+      user_id: currentGame.user_id,
+      current_frame: currentGame.current_frame,
+      bowl_try: currentGame.bowl_try,
+      bowl_1_score: currentGame.bowl_1_score,
+      bowl_2_score: currentGame.bowl_2_score,
+      frame_score: currentGame.frame_score,
+      strike_count: currentGame.strike_count,
+      last_frame_scenario: currentGame.last_frame_scenario,
+      frame_1: currentGame.frame_1,
+      frame_2: currentGame.frame_2,
+      frame_3: currentGame.frame_3,
+      frame_4: currentGame.frame_4,
+      frame_5: currentGame.frame_5,
+      frame_6: currentGame.frame_6,
+      frame_7: currentGame.frame_7,
+      frame_8: currentGame.frame_8,
+      frame_9: currentGame.frame_9,
+      frame_10: currentGame.frame_10,
+      score: currentGame.score,
+      ongoing: currentGame.ongoing
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error creating or loading game");
+  }
 });
 
 const updateGame = asyncHandler(async (req, res) => {
-  const { bowl_score, frame_score } = req.body;
   const gameModel = new Game;
   let throwScenario = "NORMAL";
+  let strikeCount;
 
-  if (bowl_score < 0 || bowl_score > 10 || frame_score > 10) {
+  if (req.body.score < 0 || req.body.score > 10 || req.params.frame_score > 10) {
     res.status(400);
     throw new Error("Bowl score must be in range of 0 to 10 knocked pins in whole frame");
   }
 
-  if(req.params.try == 1 && bowl_score === 10) {
-    throwScenario = "STRIKE";
+  if(req.params.bowl_try == 1 && req.body.score == 10) {
+    strikeCount = Number(++req.params.strike_count);
+    if(req.params.current_frame == 10) {
+      throwScenario = "STRIKE_LAST";
+    }
+    else {
+      throwScenario = "STRIKE";
+    }
   }
-  if(req.params.try == 2 && (frame_score + bowl_score === 10)) {
-    throwScenario = "SPARE";
+  if(req.params.bowl_try == 2 && (Number(req.params.frame_score) + Number(req.body.score) === 10)) {
+    if(req.params.current_frame == 10) {
+      throwScenario = "SPARE_LAST";
+    }
+    else {
+      throwScenario = "SPARE";
+    }
   }
 
-  await gameModel.update(req.params.id, req.params.frame, req.params.try, bowl_score, frame_score, throwScenario);
+  await gameModel.update(req.params.id, req.params.current_frame, req.params.bowl_try, req.params.frame_score, strikeCount, req.params.last_frame_scenario, req.body.score, throwScenario);
 
-  if (bowl_score) {
+  if (req.body.score) {
     res.status(201).json({
-      _id: req.params.id,
-      frame: req.params.frame,
-      try: req.params.try,
-      bowl_score: bowl_score,
-      thow_scenario: throwScenario
+      game_id: req.params.id,
+      current_frame: req.params.current_frame,
+      bowl_try: req.params.bowl_try,
+      frame_score: req.params.frame_score,
+      strike_count: strikeCount,
+      last_frame_scenario: req.params.last_frame_scenario,
+      score: req.body.score
     });
   } else {
     res.status(400);
@@ -49,7 +89,14 @@ const getPreviousGames = asyncHandler(async (req, res) => {
   const gameModel = new Game;
   let previousGames = await gameModel.loadAll(req.user.id);
 
-  return previousGames;
+  if (previousGames) {
+    res.status(201).json({
+      previousGames
+    });
+  } else {
+    res.status(400);
+    throw new Error("Error loading game");
+  }
 });
 
 module.exports = {
