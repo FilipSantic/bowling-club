@@ -7,30 +7,26 @@ Node.js and MySQL bowling scoring system
 ## Bonus
 
 - User registration/login system
-- React client for easier testing
+- Client built in React
 
 ## How to run
 
 These files were included in repo
 
 ```
-package.json package-lock.json .env
+package.json
+package-lock.json
+.env
 ```
 
 for easier fetching and testing.
 
-Only
-
-```
-node_modules
-```
-
-are missing in both server and client.
+Only node_modules are missing in both server and client.
 
 ## Database
 
-Blank database can be found here
+Blank MySQL database can be found here
 
 ```
-
+https://mega.nz/file/J00VDQJK#gcRQn6UWaULNm2GW_2qDmpCIbTMKZ59onY-B1JCploo
 ```
