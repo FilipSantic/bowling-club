@@ -5,7 +5,7 @@ const User = require("../models/userModel");
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
-  const userModel = new User;
+  const userModel = new User();
 
   if (!username || !password) {
     res.status(400);
@@ -22,14 +22,14 @@ const registerUser = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  const user = await userModel.create(username, hashedPassword);
+  const userId = await userModel.create(username, hashedPassword);
 
-  if (user) {
+  if (userId) {
     res.status(201).json({
-      _id: user.id,
+      _id: userId,
       username: username,
       password: hashedPassword,
-      token: generateToken(user.id),
+      token: generateToken(userId),
     });
   } else {
     res.status(400);
@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
-  const userModel = new User;
+  const userModel = new User();
 
   const user = await userModel.findOne(username);
 

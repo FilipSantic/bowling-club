@@ -2,13 +2,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import GameForm from "../components/GameForm";
-import GameItem from '../components/GameItem';
+import GameItem from "../components/GameItem";
 import Spinner from "../components/Spinner";
-import {
-  createGame,
-  getGames,
-  reset,
-} from "../features/games/gamesSlice";
+import { createGame, getGames, reset } from "../features/games/gamesSlice";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -48,19 +44,19 @@ function Dashboard() {
 
       <GameForm />
 
-      <section className='content'>
+      <section className="content">
         <h2>Current Game</h2>
-          <div className='game'>
-              <GameItem key={game.id} game={game} />
-          </div>
+        <div className="game">
+          <GameItem key={game.id} game={game} />
+        </div>
       </section>
 
-      <section className='content'>
+      <section className="content">
         <h2>Previous Games</h2>
         {games.previousGames.length > 0 ? (
-          <div className='games'>
+          <div className="games">
             {games.previousGames.map((game) => (
-              <GameItem key={game.id} game={game} />
+              <GameItem key={game.user_id} game={game} />
             ))}
           </div>
         ) : (

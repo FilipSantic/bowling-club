@@ -18,10 +18,7 @@ export const createGame = createAsyncThunk(
   async (gameData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await gamesService.createGame(
-        gameData,
-        token
-      );
+      return await gamesService.createGame(gameData, token);
     } catch (error) {
       const message =
         (error.response &&
@@ -39,10 +36,7 @@ export const updateGame = createAsyncThunk(
   async (gameData, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
-      return await gamesService.updateGame(
-        gameData,
-        token
-      );
+      return await gamesService.updateGame(gameData, token);
     } catch (error) {
       const message =
         (error.response &&

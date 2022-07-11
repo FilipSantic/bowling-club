@@ -25,7 +25,7 @@ const updateGame = async (gameData, token) => {
     },
   };
 
-  const PARAMS_URL = `/${gameData.game.game_id}/${gameData.game.current_frame}/${gameData.game.bowl_try}/${gameData.game.frame_score}/${gameData.game.strike_count}/${gameData.game.last_frame_scenario}`;
+  const PARAMS_URL = `/${gameData.game.game_id}/${gameData.game.current_frame}/${gameData.game.bowl_try}/${gameData.game.frame_score}/${gameData.game.strike_count}/${gameData.game.last_frame_scenario}/${gameData.game.additional}`;
   const response = await axios.patch(API_URL + PARAMS_URL, gameData, config);
 
   if (response.data) {

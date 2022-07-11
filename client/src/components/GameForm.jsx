@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { createGame, updateGame } from "../features/games/gamesSlice";
+import { createGame, updateGame, getGames } from "../features/games/gamesSlice";
 
 function GameForm() {
   const { user } = useSelector((state) => state.auth);
-  const { game } = useSelector(
-    (state) => state.games
-  );
+  const { game } = useSelector((state) => state.games);
   const [formData, setFormData] = useState({
     score: "",
   });
@@ -28,6 +26,7 @@ function GameForm() {
     dispatch(updateGame({ game, score }));
     setTimeout(function () {
       dispatch(createGame(user));
+      dispatch(getGames());
     }, 500);
     setFormData({ score: "" });
   };
